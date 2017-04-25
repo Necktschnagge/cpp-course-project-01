@@ -3,10 +3,16 @@
 #include <vector>
 #include "solution.h"
 
+/**
+ * Erstellt eine Variable `point` vom Typ `struct Point`, welche über jeden Punkt der angegebenen Fläche iteriert.
+ */
 #define for2D(point, x_start, y_start, x_end, y_end) Point point; for (point.y = y_start; point.y < y_end; point.y++) for (point.x = x_start; point.x < x_end; point.x++)
+
+/**
+ * Erstellt eine Variable `point` vom Typ `struct Point`, welche über jeden Punkt des angegebenen Bitmaps iteriert.
+ */
 #define forBitmap(point, bitmap) for2D(point, bitmap.position.x, bitmap.position.y, bitmap.position.x + bitmap.size.x, bitmap.position.y + bitmap.size.y)
 
-// TODO: Code kommentieren
 
 struct Point
 {
@@ -14,42 +20,110 @@ struct Point
 	int y;
 };
 
+/**
+ * Speichert ein 2D-Array von Booleans, welches sich an einer bestimmten Position in der Ebene befindet.
+ */
 class Bitmap
 {
 private:
 
+	/**
+	 * Größe des 2D-Arrays.
+	 */
 	Point size;
+
+	/**
+	 * Position des linken unternen "Pixels".
+	 */
 	Point position;
+
+	/**
+	 * Pointer auf das eigentliche Array.
+	 */
 	bool *data;
 
+	/**
+	 * Rechnet die gegebene absolute Koordinate (relativ zum Koordinatenursprung) in eine Koordinate relativ zur linken
+	 * unteren Ecke des Bitmaps um.
+	 */
 	Point toRelative(Point absolute) const;
 
+	/**
+	 * Rechnet die gegebene relative Koordinate (relativ zur linken unteren Ecke des Bitmaps), in eine Absolute um.
+	 */
 	Point toAbsolute(Point relative) const;
 
+	/**
+	 * Gibt den Wert des Bitmaps an der gegebenen Koordinate (relativ zur linken unteren Ecke) zurück.
+	 * Liegt die Koordinate auserhalb des Bitmaps, wird `true` zurückgegeben.
+	 */
 	bool getRelative(Point relative) const;
 
+	/**
+	 * Setzt den Wert des Bitmaps an der gegebenen Koordinate (relativ zur linken unteren Ecke).
+	 * Liegt die Koordinate auserhalb des Bitmaps, passiert nichts.
+	 */
 	void setRelative(Point relative, bool value);
 
 public:
 
+	/**
+	 * Erstellt ein neues Bitmap mit gegebener Größe.
+	 * Die Position wird auf (0, 0) initialisiert.
+	 *
+	 * ACHTUNG: Diese Klasse kümmert sich nicht um die Speicherverwaltung des unterliegenden bool-Arrays.
+	 *          Sie verwendet lediglich den hier übergebenen Pointer um auf die einzelnen Elemente zuzugreifen.
+	 */
 	Bitmap(int width, int height, bool *data);
 
+	/**
+	 * Gibt den Wert des Bitmaps an der gegebenen Koordinate zurück.
+	 * Liegt die Koordinate auserhalb des Bitmaps, wird `true` zurückgegeben.
+	 */
 	bool get(Point absolute) const;
 
+	/**
+	 * Setzt den Wert des Bitmaps an der gegebenen Koordinate.
+	 * Liegt die Koordinate außerhalb des Bitmaps, passiert nichts.
+	 */
 	void set(Point absolute, bool value);
 
+	/**
+	 * Setzt alle Punkte, die in `bitmap` gesetzt sind, in `this` auf `value`.
+	 */
 	void set(Bitmap& bitmap, bool value);
 
+	/**
+	 * Sucht nach einem Punkt im Bitmap, der auf `false` gesetzt ist.
+	 * Der erste gefundene Punkt wird in `result` gespeichert.
+	 *
+	 * @return `true` gdw. ein Punkt gefunden wurde.
+	 */
 	bool getFalsePoint(Point& result) const;
 
+	/**
+	 * Überprüft, ob `bitmap` in `this` "hineinpasst", d.h. kein Punkt in beiden Bitmaps auf `true` gesetzt ist.
+	 */
 	bool fits(Bitmap& bitmap) const;
 
+	/**
+	 * Setzt das komplette Bitmap auf 0 (false).
+	 */
 	void zero();
 
+	/**
+	 * Gibt eine Liste mit allen "Puzzelstücken" zurück, die so in `this` passen, dass sie den Punkt `pos` bedecken.
+	 *
+	 * ACHTING: Die zurückgegebenen Bitmaps verweisen auf die gleichen bool-Arrays, wie die Bitmaps aus `pieces`.
+	 *          Also diese lieber nicht verändern!
+	 */
 	std::vector<Bitmap> getFittingPieces(Point pos) const;
 };
 
 
+/**
+ * Array aller "Puzzelstücke"
+ */
 Bitmap pieces[6] = {
 	 Bitmap(3, 1, (bool[3]){ 1, 1, 1 }),
 	 Bitmap(1, 3, (bool[3]){ 1, 1, 1 }),
@@ -174,11 +248,14 @@ std::vector<Bitmap> Bitmap::getFittingPieces(Point pos) const
 		{
 			if (piece.getRelative(relative_to_piece))
 			{
+				// Für jedes gesetzte Pixel (`relative_to_piece`) in `piece`, welches also `pos` überdecken könnte:
+				// rechne die Startkoordinaten aus, die `piece` haben müsste, sodass dieses Pixel auf `pos` fällt.
 				piece.position = {
 					.x = pos.x - relative_to_piece.x,
 					.y = pos.y - relative_to_piece.y
 				};
 
+				// Wenn `piece` an dieser Position in die Matrix passt, füge es zur Liste hinzu.
 				if (this->fits(piece))
 				{
 					result.push_back(piece);
@@ -195,6 +272,7 @@ unsigned long long solve(Bitmap& matrix)
 	Point free_point;
 	if (!matrix.getFalsePoint(free_point))
 	{
+		// Wenn es keinen freien Pixel gibt, hat das Problem genau eine Lösung.
 		return 1;
 	}
 
@@ -203,12 +281,12 @@ unsigned long long solve(Bitmap& matrix)
 
 	for (unsigned long i = 0; i < fitting_pieces.size(); i++)
 	{
+		// für jedes Teil (`piece`), dass noch in `matrix` passt
 		Bitmap& piece = fitting_pieces[i];
 
+		// löse das Problem für die Matrix ohne `piece`
 		matrix.set(piece, true);
-
 		result += solve(matrix);
-
 		matrix.set(piece, false);
 	}
 
