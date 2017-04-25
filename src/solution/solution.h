@@ -4,6 +4,6 @@
 #ifndef SOLUTION_H
 #define SOLUTION_H
 
-void solve(int matrix_x, int matrix_y, long long int& result);
+unsigned long long solve(int width, int height);
 
 #endif

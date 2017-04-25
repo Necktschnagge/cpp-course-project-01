@@ -21,10 +21,10 @@ int main()
 	using namespace std;
 
 	int x, y;
-	long long result = 0;
+	unsigned long long result = 0;
 
 	cout << "Loesung fuer Parkettierungsaufgabe\n"
-		<< "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°\n\n"
+		<< "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n\n"
 		<< "Es soll ein x * y Feld aus quadratischen Kaestchen mit zusammenhaegenden Puzzelteilen aus drei Einzelquadraten befuellt werden"
 		<< "\n\n\n"
 		<< "x?\n";
@@ -32,7 +32,7 @@ int main()
 	if (!(cin >> x)) error();
 	cout << "\ny?\n";
 	if (!(cin >> y)) error();
-	/*solution::*/solve(x, y, result);
+	/*solution::*/result = solve(x, y);
 	cout << "\n\n\n"
 		<< "Es gibt fuer ein " << x << " x " << y << " - Feld\n" << result << "\nMoeglichkeiten fuer eine Parkettierung.\n";
 	cin.sync();
