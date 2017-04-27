@@ -1,5 +1,5 @@
 #include <assert.h>
-#include <strings.h>
+#include <cstring>
 #include <vector>
 #include "solution.h"
 
@@ -120,17 +120,24 @@ public:
 	std::vector<Bitmap> getFittingPieces(Point pos) const;
 };
 
+bool pieces_data[][4] = {
+	{ 1, 1, 1, 1 },
+	{ 0, 1, 1, 1 },
+	{ 1, 0, 1, 1 },
+	{ 1, 1, 0, 1 },
+	{ 1, 1, 1, 0 }
+};
 
 /**
  * Array aller "Puzzelstücke"
  */
 Bitmap pieces[6] = {
-	 Bitmap(3, 1, (bool[3]){ 1, 1, 1 }),
-	 Bitmap(1, 3, (bool[3]){ 1, 1, 1 }),
-	 Bitmap(2, 2, (bool[4]){ 0, 1, 1, 1 }),
-	 Bitmap(2, 2, (bool[4]){ 1, 0, 1, 1 }),
-	 Bitmap(2, 2, (bool[4]){ 1, 1, 0, 1 }),
-	 Bitmap(2, 2, (bool[4]){ 1, 1, 1, 0 })
+	 Bitmap(3, 1, pieces_data[0]),
+	 Bitmap(1, 3, pieces_data[0]),
+	 Bitmap(2, 2, pieces_data[1]),
+	 Bitmap(2, 2, pieces_data[2]),
+	 Bitmap(2, 2, pieces_data[3]),
+	 Bitmap(2, 2, pieces_data[4])
 };
 
 
@@ -139,32 +146,24 @@ Bitmap::Bitmap(int width, int height, bool *data)
 {
 	assert(data != nullptr);
 
-	this->size = {
-		.x = width,
-		.y = height
-	};
-
-	this->position = {
-		.x = 0,
-		.y = 0
-	};
-
+	this->size = { width, height };
+	this->position = { 0, 0 };
 	this->data = data;
 }
 
 Point Bitmap::toRelative(Point absolute) const
 {
 	return {
-		.x = absolute.x - this->position.x,
-		.y = absolute.y - this->position.y
+		absolute.x - this->position.x,
+		absolute.y - this->position.y
 	};
 }
 
 Point Bitmap::toAbsolute(Point relative) const
 {
 	return {
-		.x = relative.x + this->position.x,
-		.y = relative.y + this->position.y
+		relative.x + this->position.x,
+		relative.y + this->position.y
 	};
 }
 
@@ -233,7 +232,7 @@ bool Bitmap::fits(Bitmap& bitmap) const
 
 void Bitmap::zero()
 {
-	bzero(this->data, sizeof(*data) * this->size.x * this->size.y);
+	memset(this->data, 0, sizeof(*data) * this->size.x * this->size.y);
 }
 
 std::vector<Bitmap> Bitmap::getFittingPieces(Point pos) const
@@ -251,8 +250,8 @@ std::vector<Bitmap> Bitmap::getFittingPieces(Point pos) const
 				// Für jedes gesetzte Pixel (`relative_to_piece`) in `piece`, welches also `pos` überdecken könnte:
 				// rechne die Startkoordinaten aus, die `piece` haben müsste, sodass dieses Pixel auf `pos` fällt.
 				piece.position = {
-					.x = pos.x - relative_to_piece.x,
-					.y = pos.y - relative_to_piece.y
+					pos.x - relative_to_piece.x,
+					pos.y - relative_to_piece.y
 				};
 
 				// Wenn `piece` an dieser Position in die Matrix passt, füge es zur Liste hinzu.
@@ -298,9 +297,11 @@ unsigned long long solve(int width, int height)
 	if (width < 0 || height < 0) return 0;
 	if (width % 3 != 0 && height % 3 != 0) return 0;
 
-	bool data[width * height];
+	bool *data = new bool[width * height]; // hässlich
 	Bitmap matrix = Bitmap(width, height, data);
 	matrix.zero();
 
-	return solve(matrix);
+	unsigned long long solution = solve(matrix);
+	delete [] data; // hässlich
+	return solution;
 }
