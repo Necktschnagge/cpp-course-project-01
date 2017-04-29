@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include <list>
+#include <unordered_map>
 //#include <boost//multiprecision/cpp_int.hpp>
 
 using Field = std::vector<std::vector<bool>>;

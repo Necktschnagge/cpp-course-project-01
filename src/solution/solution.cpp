@@ -4,7 +4,6 @@
 std::map < std::vector<std::vector<bool>>, unsigned long long > all;
 std::list<std::vector<std::vector<bool>>> cur;
 std::list<std::vector<std::vector<bool>>> nex;
-std::list<std::vector<std::vector<bool>>> pl;
 
 std::list<std::vector<std::vector<bool>>>* pc;
 std::list<std::vector<std::vector<bool>>>* pn;
@@ -38,6 +37,27 @@ bool adv_at(Field& field, int x, int y) {
 	}
 }
 
+const std::vector<std::vector<coord>> ntiles{
+	{
+		{0,0}, {0,1}, {0,2}
+	},
+	{
+		{0,0}, {0,1}, {1,1}
+	},
+	{
+		{0,0}, {0,1}, {1,0}
+	},
+	{
+		{0,0}, {1,0}, {1,1}
+	},
+	{
+		{0,0}, {1,0}, {2,0}
+	},
+	{
+		{0,0}, {1,0}, {1,-1}
+	}
+};
+
 const std::vector<Field> tiles = {
 	{
 		{0,1,1,1}, {0,0,0,0}, {0,0,0,0}
@@ -61,7 +81,7 @@ const std::vector<Field> tiles = {
 
 void solve(int matrix_x, int matrix_y, long long int& result){
 	if (matrix_y > matrix_x) return solve(matrix_y, matrix_x, result);
-
+	if ((matrix_x * matrix_y) % 3) { result = 0; return; }
 	GX = matrix_x;
 	GY = matrix_y;
 
@@ -76,13 +96,12 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 	{
 		std::cout << "Lege Teil Nr" << ++counter << '\n';
 		//int cinner{ 0 };
-		auto stateiter = pc->begin();
-		while (stateiter != pc->end())
+		auto state_iter = pc->begin();
+		while (state_iter != pc->end())
 		{	
 			//++cinner;
-			auto state = *(stateiter++);
+			auto state = *(state_iter++);
 			
-			//std::cout << cinner << "Wir haben ein alt state vom stack genommen\n" << "es gibt noch restliche:" << pc->size() << std::endl;
 			int xn, yn;
 			bool has_free = new_free(xn, yn, state);
 			if (!has_free) {
@@ -91,6 +110,7 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 				return;
 			}
 			//std::cout << "es hat freie pläütze\n";
+			
 			for (auto tile : tiles) {
 				Field nstate = state;
 				// schauen ob man tile drauflegen kann.
@@ -100,10 +120,12 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 						if (tile.at(i).at(j)) {
 							if (adv_at(nstate, xn + i, yn + j - 1)) {
 								not_okay = true;
+								goto here;
 							}
 						}
 					}
 				}
+	here:
 				if (not_okay) continue;
 				for (int i = 0; i < 3; ++i) {
 					for (int j = 0; j < 4; ++j) {
@@ -117,7 +139,7 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 					all.at(nstate) += all.at(state);
 				}
 				catch (...) {
-					all.operator[](nstate) = all.at(state);
+					all[nstate] = all.at(state);
 					pn->push_back(nstate);
 				}
 				// nstate auf die neue liste setzen.
@@ -126,12 +148,10 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 			}// for tiles
 		}
 
-
-		/*for (const auto& item : pl) {
+		for (const Field& item: *pc) {
 			all.erase(item);
-		}*/
-		pl = *pc;
-
+		}
+		pc->clear();
 		std::swap(pn, pc);
 	}
 
