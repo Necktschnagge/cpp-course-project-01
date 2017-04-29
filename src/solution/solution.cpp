@@ -1,12 +1,12 @@
 #include "solution.h"
 #include <iostream>
 
-std::map < std::vector<std::vector<bool>>, unsigned long long > all;
-std::list<std::vector<std::vector<bool>>> cur;
-std::list<std::vector<std::vector<bool>>> nex;
+std::map<Field, unsigned long long> all;
+std::list<Field> cur;
+std::list<Field> nex;
 
-std::list<std::vector<std::vector<bool>>>* pc;
-std::list<std::vector<std::vector<bool>>>* pn;
+std::list<Field>* pc;
+std::list<Field>* pn;
 
 int GX;
 int GY;
@@ -58,27 +58,6 @@ const std::vector<std::vector<coord>> ntiles{
 	}
 };
 
-const std::vector<Field> tiles = {
-	{
-		{0,1,1,1}, {0,0,0,0}, {0,0,0,0}
-	},
-	{
-		{0,1,1,0}, {0,0,1,0}, {0,0,0,0}
-	},
-	{
-		{0,1,1,0}, {0,1,0,0}, {0,0,0,0}
-	},
-	{
-		{0,1,0,0}, {0,1,1,0}, {0,0,0,0}
-	},
-	{
-		{0,1,0,0}, {0,1,0,0}, {0,1,0,0}
-	},
-	{
-		{0,1,0,0}, {1,1,0,0}, {0,0,0,0}
-	}
-};
-
 void solve(int matrix_x, int matrix_y, long long int& result){
 	if (matrix_y > matrix_x) return solve(matrix_y, matrix_x, result);
 	if ((matrix_x * matrix_y) % 3) { result = 0; return; }
@@ -95,44 +74,28 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 	while (true)
 	{
 		std::cout << "Lege Teil Nr" << ++counter << '\n';
-		//int cinner{ 0 };
+		int cinner{ 0 };
 		auto state_iter = pc->begin();
 		while (state_iter != pc->end())
 		{	
-			//++cinner;
+			//std::cout << ++cinner << '\n';
 			auto state = *(state_iter++);
 			
 			int xn, yn;
 			bool has_free = new_free(xn, yn, state);
 			if (!has_free) {
-				//std::cout << all[state] << "Möglichkeiten";
 				result = all[state];
 				return;
 			}
-			//std::cout << "es hat freie pläütze\n";
-			
-			for (auto tile : tiles) {
-				Field nstate = state;
+			// freie Felder verfügbar
+			for (auto tile : ntiles) {
+				Field nstate = state; // das könnte auch performance fresser sein
 				// schauen ob man tile drauflegen kann.
-				bool not_okay{ false };
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 4; ++j) {
-						if (tile.at(i).at(j)) {
-							if (adv_at(nstate, xn + i, yn + j - 1)) {
-								not_okay = true;
-								goto here;
-							}
-						}
+				for (const auto& cell : tile) {
+					if (adv_at(nstate, xn + cell.x, yn + cell.y)) {
+						goto here;
 					}
-				}
-	here:
-				if (not_okay) continue;
-				for (int i = 0; i < 3; ++i) {
-					for (int j = 0; j < 4; ++j) {
-						if (tile.at(i).at(j)) {
-							nstate.at(xn + i).at(yn + j - 1) = true;
-						}
-					}
+					nstate.at(xn + cell.x).at(yn + cell.y) = true;
 				}
 				// nstate in die map hinzufügen
 				try {
@@ -143,8 +106,7 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 					pn->push_back(nstate);
 				}
 				// nstate auf die neue liste setzen.
-
-				//std::cout << "jetzt auf pn:" << pn->size() << std::endl;
+			here: continue; // so ein unsinn
 			}// for tiles
 		}
 
