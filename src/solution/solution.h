@@ -3,10 +3,15 @@
 */
 #ifndef SOLUTION_H
 #define SOLUTION_H
+
+#ifdef _MSC_VER
+#include "../Visual-Studio/parkettierung/parkettierung/stdafx.h"
+#endif // _MSC_VER
+
+#include <iostream>
 #include <vector>
 #include <map>
 #include <list>
-#include <unordered_map>
 //#include <boost//multiprecision/cpp_int.hpp>
 
 using Field = std::vector<std::vector<bool>>;
@@ -20,4 +25,26 @@ struct coord {
 	int y;
 };
 
+
+class BigInt {
+	unsigned long long lower;
+	unsigned long long upper;
+
+	BigInt() : lower(0), upper(0){}
+	BigInt(unsigned long long l, unsigned long long u) : lower(l), upper(u) {}
+
+	BigInt operator + (const BigInt& r) {
+		unsigned long long zwischen = (lower + r.lower);
+		return BigInt(zwischen & (0x7FFFFFFFFFFFFFFFLL), upper + r.upper + (!!((zwischen) & (1<<63))));
+	}
+	
+	std::ostream& operator << (std::ostream& stream) {
+		stream << lower;
+		if (upper) {
+			stream << "  +  2^63 * " << upper;
+		}
+		return stream;
+	}
+	
+};
 #endif

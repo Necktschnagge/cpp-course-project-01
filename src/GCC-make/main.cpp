@@ -4,6 +4,7 @@
 
 // extern headers:
 #include <iostream>
+#include <ctime>
 
 // own headers:
 #include "../solution/solution.h"
@@ -22,7 +23,6 @@ int main()
 
 	int x, y;
 	long long result = 0;
-
 	cout << "Loesung fuer Parkettierungsaufgabe\n"
 		<< "같같같같같같같같같같같같같같같같같\n\n"
 		<< "Es soll ein x * y Feld aus quadratischen Kaestchen mit zusammenhaegenden Puzzelteilen aus drei Einzelquadraten befuellt werden"
@@ -32,12 +32,12 @@ int main()
 	if (!(cin >> x)) error();
 	cout << "\ny?\n";
 	if (!(cin >> y)) error();
+	time_t begin = time(nullptr);
 	/*solution::*/solve(x, y, result);
+	time_t end = time(nullptr);
 	cout << "\n\n\n"
-		<< "Es gibt fuer ein " << x << " x " << y << " - Feld\n" << result << "\nMoeglichkeiten fuer eine Parkettierung.\n";
-	cin.sync();
-	cin.get();
-	cin.get();
-    return 0;
+		<< "Es gibt fuer ein " << x << " x " << y << " - Feld\n" << result << "\nMoeglichkeiten fuer eine Parkettierung.\n"
+		<< "\nZeit:  " << end-begin << "s\n";
+	return 0;
 }
 

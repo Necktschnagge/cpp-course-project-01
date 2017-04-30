@@ -1,18 +1,20 @@
 #include "solution.h"
+
+
 #include <iostream>
 
-std::map<Field, unsigned long long> all;
-std::list<Field> cur;
-std::list<Field> nex;
+std::map < std::vector<std::vector<bool>>, unsigned long long > all;
+std::list<std::vector<std::vector<bool>>> cur;
+std::list<std::vector<std::vector<bool>>> nex;
 
-std::list<Field>* pc;
-std::list<Field>* pn;
+std::list<std::vector<std::vector<bool>>>* pc;
+std::list<std::vector<std::vector<bool>>>* pn;
 
 int GX;
 int GY;
 int mind_zeile{ 0 };
 
-bool new_free(int& xx, int& yy, const Field& field) {
+inline bool new_free(int& xx, int& yy, const Field& field) {
 	for (int x = mind_zeile; x < GX; ++x) {
 		for (int y = 0; y < GY; ++y) {
 			if (field.at(x).at(y) == false) {
@@ -26,7 +28,7 @@ bool new_free(int& xx, int& yy, const Field& field) {
 	return false;
 }
 
-bool adv_at(Field& field, int x, int y) {
+inline bool adv_at(Field& field, int x, int y) {
 	static bool dummy;
 	try {
 		return (field.at(x).at(y));
@@ -73,8 +75,8 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 	int counter{ 0 };
 	while (true)
 	{
-		std::cout << "Lege Teil Nr" << ++counter << '\n';
-		int cinner{ 0 };
+		std::cout << "Lege Teil: \t" << ++counter << "\tvon\t" << (GX*GY)/3<< '\n';
+		//int cinner{ 0 };
 		auto state_iter = pc->begin();
 		while (state_iter != pc->end())
 		{	
