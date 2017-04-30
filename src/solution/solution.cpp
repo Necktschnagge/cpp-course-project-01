@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-std::map < std::vector<std::vector<bool>>, unsigned long long > all;
+std::map < std::vector<std::vector<bool>>, BigInt > all;
 std::list<std::vector<std::vector<bool>>> cur;
 std::list<std::vector<std::vector<bool>>> nex;
 
@@ -86,7 +86,8 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 			int xn, yn;
 			bool has_free = new_free(xn, yn, state);
 			if (!has_free) {
-				result = all[state];
+				result = 0;
+				std::cout << all[state];
 				return;
 			}
 			// freie Felder verfügbar
@@ -101,7 +102,7 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 				}
 				// nstate in die map hinzufügen
 				try {
-					all.at(nstate) += all.at(state);
+					all.at(nstate) = all.at(nstate) + all.at(state);
 				}
 				catch (...) {
 					all[nstate] = all.at(state);
