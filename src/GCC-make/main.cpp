@@ -38,6 +38,7 @@ int main()
 	cout << "\n\n\n"
 		<< "Es gibt fuer ein " << x << " x " << y << " - Feld\n" << result << "\nMoeglichkeiten fuer eine Parkettierung.\n"
 		<< "\nZeit:  " << end-begin << "s\n";
+	cin.get();
 	return 0;
 }
 

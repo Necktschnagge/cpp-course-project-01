@@ -43,6 +43,7 @@ int main()
 	std::cout << "\n\nZeit:  " << after - before << "s";
 	cin.sync();
 	cin.get();
+	cin.get();
     return 0;
 }
 
