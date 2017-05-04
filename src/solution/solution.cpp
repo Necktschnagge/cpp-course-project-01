@@ -205,7 +205,7 @@ void Bitmap::set(Bitmap &bitmap, bool value)
 
 bool Bitmap::getFalsePoint(Point& result) const
 {
-	for2D(relative, 0, 0, this->size.y, this->size.y)
+	for2D(relative, 0, 0, this->size.x, this->size.y)
 	{
 		if (!this->getRelative(relative))
 		{
