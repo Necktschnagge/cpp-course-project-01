@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 #include <list>
+
 //#include <boost//multiprecision/cpp_int.hpp>
 
 using Field = std::vector<std::vector<bool>>;
@@ -25,7 +26,8 @@ struct coord {
 	int y;
 };
 
-
+#if false
+// Zeug das noch nicht funktioniert...
 class BigInt {
 	unsigned long long lower;
 	unsigned long long upper;
@@ -55,5 +57,7 @@ std::ostream& operator << (std::ostream& stream, const BigInt& i) {
 	}
 	return stream;
 }
-
+#else
+using BigInt = long long int;
+#endif
 #endif

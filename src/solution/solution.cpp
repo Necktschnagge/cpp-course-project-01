@@ -86,7 +86,7 @@ void solve(int matrix_x, int matrix_y, long long int& result){
 			int xn, yn;
 			bool has_free = new_free(xn, yn, state);
 			if (!has_free) {
-				result = 0;
+				result = all[state];
 				std::cout << all[state];
 				return;
 			}
