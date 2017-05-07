@@ -17,3 +17,13 @@ Bestimmt werden soll die Anzahl der Möglichkeiten, dieses Feld mit Puzzelteilen
 
 Ihr dürft zunächst einen stupiden (brute force) Algorithmus schreiben, der das Problem für kleine Dimensionen m, n löst. Ziel ist es, einen funktionierenden Algorithmus zu finden. Ideen für ein Design eines effizienten Algorithmus', der auch bei größerren Matrizen noch mithalten kann, sollten nebenbei gesammelt werden.
 Die Implementation eines solchen effizienten Algorithmus' heben wir uns für später auf. Wer natürlich schon Programmiererfahrung mitbringt und sich mit brute force unterfordert fühlt, dem seien natürlich auch jetzt in der Anfangsphase keine Grenzen gesetzt.
+
+Beispiele für Ein und Ausgabe des Algorithmus zum Testen:
+
+| Eingabe | Ausgabe |
+|---|---|
+| 0x0  | 1  |
+| 2x2  | 0  |
+| 3x3  | 10  |
+| 3x4  | 23  |
+| 3x5  | 62  |
